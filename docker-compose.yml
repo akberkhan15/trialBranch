@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  api:
+    container_name: settings_trail_api
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+    ports:
+      - "9000:9000"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - data
+      - mysqldb
+
+  data:
+    container_name: settings_trail_data
+    image: mongo:3.6.3
+    environment:
+      - MONGO_INITDB_DATABASE=trail_task
+      - MONGO_INITDB_ROOT_USERNAME=
+      - MONGO_INITDB_ROOT_PASSWORD=
+    command: mongod --port 27019
+    ports:
+      - "27019:27019"
+
+  mysqldb:
+    image: mysql:5.7.29
+    container_name: setting_trail_mysql
+    restart: unless-stopped
+    ports:
+      - "3309:3309"
+    environment:
+      MYSQL_DATABASE: trail_task
+      MYSQL_ROOT_PASSWORD: admin12345@
+      SERVICE_NAME: mysql
